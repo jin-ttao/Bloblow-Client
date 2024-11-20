@@ -96,3 +96,14 @@ export const GROUP_CHART_TYPE = Object.freeze({
   LIKE: "주간 공감 수 추이",
   COMMENT: "주간 댓글 수 추이",
 });
+
+export const TEAM_INFO = Object.freeze({
+  GITHUB: "https://github.com/Team-Bloblow",
+  EMAIL: "ssongq92@gmail.com",
+});
+
+export const SIGNIN_BUTTON_TEXT = [
+  "놓친 인사이트 발견하기",
+  "키워드 구독하러 가기",
+  "블로그 게시물 살펴보기",
+];

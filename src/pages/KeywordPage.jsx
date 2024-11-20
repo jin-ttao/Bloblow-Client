@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import asyncGetUserGroup from "../api/group/asyncGetUserGroup";
 import asyncGetKeyword from "../api/keyword/asyncGetKeyword";
@@ -21,6 +21,8 @@ const KeywordPage = () => {
   useNoSignInRedirect();
 
   const { groupId, keywordId } = useParams();
+  const navigate = useNavigate();
+
   const [dashboardType, setDashboardType] = useState("chart");
   const [filterList, setFilterList] = useState(POST_LISTS.DEFAULT_FILTER_LIST);
   const setUserGroupList = useBoundStore((state) => state.setUserGroupList);
@@ -50,6 +52,16 @@ const KeywordPage = () => {
     enabled: hasKeywordId,
   });
 
+  const invalidGroupId = userGroupList?.groupListResult?.find(
+    (groupInfo) => groupInfo._id === groupId
+  );
+  const isInvalidKeywordId = specificKeywordData?.message?.includes("InvalidKeywordId");
+
+  if (isInvalidKeywordId || invalidGroupId === undefined) {
+    navigate("/notFoundPage");
+    return;
+  }
+
   const isError =
     isUserGroupListError ||
     isSpecificKeywordDataError ||
@@ -65,7 +77,7 @@ const KeywordPage = () => {
   }
 
   return (
-    <main className="flex justify-start items-start mx-auto pt-67 h-screen w-full max-w-1440">
+    <main className="flex justify-start items-stretch mx-auto pt-67 w-full h-full max-w-1440">
       <DashboardSidebar userGroupList={userGroupList?.groupListResult} groupId={groupId} />
       <section
         className={`w-full flex flex-col justify-start ${dashboardType !== "chart" && "h-full"}`}
@@ -73,11 +85,12 @@ const KeywordPage = () => {
         <DashboardHeader
           userGroupList={userGroupList?.groupListResult}
           groupId={groupId}
+          userUid={userUid}
           specificKeywordData={specificKeywordData}
           keywordId={keywordId}
         />
         <article
-          className={`flex flex-col border-l-1 border-b-2 border-r-2 border-slate-200/80 w-full ${dashboardType !== "chart" && "h-full"}`}
+          className={`flex flex-col border-l-1 border-b-2 border-r-2 border-slate-200/80 shadow-md w-full ${dashboardType !== "chart" && "h-full"}`}
         >
           <div className="flex gap-10 w-full h-44 bg-gray-100 border-x-1">
             <button

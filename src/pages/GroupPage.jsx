@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 import asyncGetUserGroup from "../api/group/asyncGetUserGroup";
 import GroupPeriodPostCountCard from "../components/Card/Chart/GroupPeriodPostCountCard";
@@ -13,6 +13,7 @@ const GroupPage = () => {
   useNoSignInRedirect();
 
   const { groupId } = useParams();
+  const navigate = useNavigate();
 
   const setUserGroupList = useBoundStore((state) => state.setUserGroupList);
   const userUid = useBoundStore((state) => state.userInfo.uid);
@@ -24,6 +25,15 @@ const GroupPage = () => {
     enabled: hasUserUid,
     staleTime: 3 * 1000,
   });
+
+  const invalidGroupId = userGroupList?.groupListResult?.find(
+    (groupInfo) => groupInfo._id === groupId
+  );
+
+  if (invalidGroupId === undefined) {
+    navigate("/notFoundPage");
+    return;
+  }
 
   const isError = isUserGroupListError || userGroupList?.message?.includes("Error occured");
 
@@ -44,19 +54,19 @@ const GroupPage = () => {
   }
 
   return (
-    <main className="flex justify-start items-start mx-auto pt-67 h-screen w-full max-w-1440">
+    <main className="flex justify-start items-stretch mx-auto pt-67 w-full h-full max-w-1440">
       <DashboardSidebar
         userGroupList={userGroupList?.groupListResult}
-        userUid={userUid}
         groupId={groupId}
+        userUid={userUid}
       />
-      <section className="flex flex-col justify-start w-full">
+      <section className="flex flex-col justify-stretch w-full">
         <DashboardHeader
           userGroupList={userGroupList?.groupListResult}
-          userUid={userUid}
           groupId={groupId}
+          userUid={userUid}
         />
-        <article className="flex flex-col border-l-1 border-b-2 border-r-2 border-slate-200/80 shadow-md w-full mb-30">
+        <article className="flex flex-col border-l-1 border-b-2 border-r-2 border-slate-200/80 shadow-md w-full">
           <div className="flex flex-col gap-10 p-10 w-full">
             <GroupPeriodPostCountCard
               groupChartType={GROUP_CHART_TYPE.POST}

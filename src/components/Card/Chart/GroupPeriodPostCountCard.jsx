@@ -6,6 +6,7 @@ import asyncGetGroupPostCountList from "../../../api/group/asyncGetGroupPostCoun
 import { GROUP_CHART_TYPE } from "../../../config/constants";
 import GroupLineChart from "../../Chart/GroupLineChart";
 import GroupPeriodPagination from "../../Pagination/GroupPeriodPagination";
+import ChartSkeleton from "../../UI/ChartSkeleton";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import PropTypes from "prop-types";
 
@@ -30,6 +31,7 @@ const GroupPeriodPostCountCard = ({ groupChartType, groupId, hasUserUid }) => {
   const {
     data: groupPostCountData,
     isError: isGroupPostCountDataError,
+    isPending: isGroupPostCountDataPending,
     isPlaceholderData,
   } = useQuery({
     queryKey: ["groupPostCount", cursorId, groupId, groupChartType],
@@ -44,9 +46,21 @@ const GroupPeriodPostCountCard = ({ groupChartType, groupId, hasUserUid }) => {
 
   if (isError) {
     return (
-      <article className="flex-col-center w-full border-2 rounded-md">
-        에러가 발생하였습니다. 잠시 후 다시 시도해주시기 바랍니다.
+      <article
+        className={`flex-center border-2 rounded-md ${groupChartType === GROUP_CHART_TYPE.POST ? "w-full" : "w-1/2"} aspect-[13/5]`}
+      >
+        차트를 불러오는데 실패했습니다. 잠시 후 다시 시도해주시기 바랍니다.
       </article>
+    );
+  }
+
+  if (isGroupPostCountDataPending && cursorId === "") {
+    return (
+      <ChartSkeleton
+        containerStyle={`flex flex-col gap-6 p-10 border-2 rounded-md ${groupChartType === GROUP_CHART_TYPE.POST ? "w-full" : "w-1/2"}`}
+        chartTitle={groupChartType}
+        chartAspect="13/5"
+      />
     );
   }
 

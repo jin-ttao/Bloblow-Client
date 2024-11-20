@@ -5,6 +5,7 @@ import { PERIOD_TYPE } from "../../../config/constants";
 import PeriodToggleButton from "../../Button/PeriodToggleButton";
 import LineChart from "../../Chart/LineChart";
 import PeriodPagination from "../../Pagination/PeriodPagination";
+import ChartSkeleton from "../../UI/ChartSkeleton";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import PropTypes from "prop-types";
 
@@ -17,6 +18,7 @@ const PeriodPostCountCard = ({ keywordId }) => {
     data: chartData,
     isPlaceholderData,
     isError,
+    isPending: isChartDataPending,
   } = useQuery({
     queryKey: ["postCount", keywordId, period, cursorId],
     queryFn: () => asyncGetPostCountList(keywordId, cursorId, period),
@@ -25,16 +27,26 @@ const PeriodPostCountCard = ({ keywordId }) => {
     placeholderData: keepPreviousData,
   });
 
-  if (chartData === undefined) {
-    return null;
-  }
-
   if (isError || chartData?.message?.includes("Error occured")) {
     return (
       <div className="flex flex-col gap-6 w-full p-10 border-1 rounded-md justify-center items-center">
         주간 게시물 차트를 불러오는 데 실패했습니다.
       </div>
     );
+  }
+
+  if (isChartDataPending && cursorId === "") {
+    return (
+      <ChartSkeleton
+        containerStyle="flex flex-col gap-6 w-full p-10 border-2 rounded-md"
+        chartTitle="게시물 수"
+        chartAspect="13/5"
+      />
+    );
+  }
+
+  if (chartData === undefined) {
+    return null;
   }
 
   return (

@@ -5,6 +5,7 @@ import { PERIOD_TYPE } from "../../../config/constants";
 import PeriodToggleButton from "../../Button/PeriodToggleButton";
 import MultiTypeChart from "../../Chart/MultiTypeChart";
 import PeriodPagination from "../../Pagination/PeriodPagination";
+import ChartSkeleton from "../../UI/ChartSkeleton";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import PropTypes from "prop-types";
 
@@ -17,6 +18,7 @@ const PeriodReactionCountCard = ({ keywordId }) => {
     data: chartData,
     isPlaceholderData,
     isError,
+    isPending: isChartDataPending,
   } = useQuery({
     queryKey: ["reactionCount", keywordId, period, cursorId],
     queryFn: () => asyncGetReactionCountList(keywordId, cursorId, period),
@@ -24,16 +26,26 @@ const PeriodReactionCountCard = ({ keywordId }) => {
     placeholderData: keepPreviousData,
   });
 
-  if (chartData === undefined) {
-    return null;
-  }
-
   if (isError || chartData?.message?.includes("Error occured")) {
     return (
       <div className="flex flex-col gap-6 w-1/2 h-full p-10 border-1 rounded-md justify-center items-center">
         주간 게시물 반응수 차트를 불러오는 데 실패했습니다.
       </div>
     );
+  }
+
+  if (isChartDataPending && cursorId === "") {
+    return (
+      <ChartSkeleton
+        containerStyle="flex flex-col gap-6 w-1/2 p-10 border-2 rounded-md"
+        chartTitle="게시물 반응수"
+        chartAspect="2"
+      />
+    );
+  }
+
+  if (chartData === undefined) {
+    return null;
   }
 
   return (
@@ -47,7 +59,7 @@ const PeriodReactionCountCard = ({ keywordId }) => {
           setCursorId={setCursorId}
         />
       </div>
-      <div className="flex-col-center">
+      <div className="flex-col-center gap-5">
         <MultiTypeChart chartData={chartData} />
         <PeriodPagination
           chartData={chartData}
