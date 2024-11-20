@@ -1,6 +1,8 @@
 import { useState } from "react";
 
 import asyncPutGroupName from "../../api/group/asyncPutGroupName";
+import { ALERT_MESSAGE, CONFIRM_MESSAGE, ERROR_MESSAGE, MODAL_TYPE } from "../../config/constants";
+import useBoundStore from "../../store/client/useBoundStore";
 import getDate from "../../utils/getDate";
 import KeywordChip from "../Chip/KeywordChip";
 import CalendarIcon from "../Icon/CalendarIcon";
@@ -9,9 +11,16 @@ import UpdateIcon from "../Icon/UpdateIcon";
 import Button from "../UI/Button";
 import Label from "../UI/Label";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import AlertModal from "../Modal/AlertModal";
+import ConfirmModal from "../Modal/ConfirmModal";
+import ErrorModal from "../Modal/ErrorModal";
+import Button from "../UI/Button";
 import PropTypes from "prop-types";
 
 const DashboardHeader = ({ userGroupList, userUid, groupId, specificKeywordData, keywordId }) => {
+const DashboardHeader = ({ userGroupList, groupId, specificKeywordData, keywordId }) => {
+  const openModalTypeList = useBoundStore((state) => state.openModalTypeList);
+  const addModal = useBoundStore((state) => state.addModal);
   const dashboardGroup = userGroupList?.find((groupInfo) => groupInfo._id === groupId);
   const dashboardGroupName = dashboardGroup?.name;
   const dashboardKeywordList = dashboardGroup?.keywordIdList;
@@ -42,6 +51,12 @@ const DashboardHeader = ({ userGroupList, userUid, groupId, specificKeywordData,
 
   const createdDate = getDate(specificKeywordData?.createdAt);
   const updatedDate = getDate(specificKeywordData?.updatedAt);
+
+  const isNotUpdated = specificKeywordData?.createdAt === specificKeywordData?.updatedAt;
+
+  const handleKeywordDelete = async () => {
+    addModal(MODAL_TYPE.CONFIRM);
+  };
 
   if (keywordId === undefined) {
     const handleEditGroupButtonClick = () => {
@@ -143,6 +158,12 @@ const DashboardHeader = ({ userGroupList, userUid, groupId, specificKeywordData,
           <span className="flex items-center pt-2">
             <CalendarIcon className="size-18 fill-none mr-5 font-bold" />
             {`구독 시작일 : ${createdDate?.currentYear}년 ${createdDate?.currentMonth}월 ${createdDate?.currentDate}일`}
+            <Button
+              styles="w-70 h-40 rounded-[4px] text-slate-500 item-center text-center text-15 font-medium ml-4 underline decoration-1"
+              onClick={handleKeywordDelete}
+            >
+              구독 해지
+            </Button>
           </span>
           <span className="flex items-center pt-2">
             <UpdateIcon className="size-18 mr-5" />
@@ -150,6 +171,15 @@ const DashboardHeader = ({ userGroupList, userUid, groupId, specificKeywordData,
           </span>
         </p>
       </div>
+      {openModalTypeList.includes(MODAL_TYPE.CONFIRM) && (
+        <ConfirmModal confirmMessage={CONFIRM_MESSAGE.DELETE_KEYWORD} confirmData={{ keywordId }} />
+      )}
+      {openModalTypeList[openModalTypeList.length - 1] === MODAL_TYPE.ALERT && (
+        <AlertModal alertMessage={ALERT_MESSAGE.DELETE_KEYWORD_SUCCESS} />
+      )}
+      {openModalTypeList[openModalTypeList.length - 1] === MODAL_TYPE.ERROR && (
+        <ErrorModal errorMessage={ERROR_MESSAGE.DELETE_KEYWORD_ERROR} />
+      )}
     </aside>
   );
 };
