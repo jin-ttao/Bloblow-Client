@@ -52,15 +52,18 @@ const KeywordPage = () => {
     enabled: hasKeywordId,
   });
 
-  const invalidGroupId = userGroupList?.groupListResult?.find(
-    (groupInfo) => groupInfo._id === groupId
-  );
-  const isInvalidKeywordId = specificKeywordData?.message?.includes("InvalidKeywordId");
+  useEffect(() => {
+    const validGroupId = userGroupList?.groupListResult?.find(
+      (groupInfo) => groupInfo._id === groupId
+    );
+    const isInvalidKeywordId = specificKeywordData?.message?.includes("InvalidKeywordId");
 
-  if (isInvalidKeywordId || invalidGroupId === undefined) {
-    navigate("/notFoundPage");
-    return;
-  }
+    if (isInvalidKeywordId || (userGroupList && validGroupId === undefined)) {
+      navigate("/notFoundPage");
+
+      return;
+    }
+  }, [groupId, navigate, specificKeywordData, userGroupList]);
 
   const isError =
     isUserGroupListError ||
@@ -77,8 +80,12 @@ const KeywordPage = () => {
   }
 
   return (
-    <main className="flex justify-start items-stretch mx-auto pt-67 w-full h-full max-w-1440">
-      <DashboardSidebar userGroupList={userGroupList?.groupListResult} groupId={groupId} />
+    <main className="flex flex-col md:flex-row justify-start items-stretch mx-auto pt-67 w-full h-full max-w-1440">
+      <DashboardSidebar
+        userGroupList={userGroupList?.groupListResult}
+        groupId={groupId}
+        keywordId={keywordId}
+      />
       <section
         className={`w-full flex flex-col justify-start ${dashboardType !== "chart" && "h-full"}`}
       >
@@ -94,17 +101,17 @@ const KeywordPage = () => {
         >
           <div className="flex gap-10 w-full h-44 bg-gray-100 border-x-1">
             <button
-              className={`flex w-full gap-5 py-5 h-44 items-center justify-center ${dashboardType === "chart" ? "bg-white font-bold border-t-2 border-gray-500" : "text-gray-500"} hover:font-bold hover:text-gray-800`}
+              className={`flex w-full gap-5 py-5 h-44 items-center justify-center md:text-16 text-14 ${dashboardType === "chart" ? "bg-white font-bold border-t-2 border-gray-500" : "text-gray-500"} hover:font-bold hover:text-gray-800`}
               onClick={() => setDashboardType("chart")}
             >
-              <ChartIcon className="w-20 h-20" />
+              <ChartIcon className="md:size-20 size-16" />
               대시보드
             </button>
             <button
-              className={`flex w-full gap-5 py-5 h-44 items-center justify-center ${dashboardType === "post" ? "bg-white font-bold border-t-2 border-gray-500" : "text-gray-500"} hover:font-bold hover:text-gray-800`}
+              className={`flex w-full gap-5 py-5 h-44 items-center justify-center md:text-16 text-14 ${dashboardType === "post" ? "bg-white font-bold border-t-2 border-gray-500" : "text-gray-500"} hover:font-bold hover:text-gray-800`}
               onClick={() => setDashboardType("post")}
             >
-              <PostIcon className="w-20 h-20" />
+              <PostIcon className="md:size-20 size-16" />
               게시물 목록
             </button>
           </div>
@@ -116,11 +123,11 @@ const KeywordPage = () => {
             <>
               {dashboardType === "chart" ? (
                 <div className="flex flex-col gap-10 p-10 w-full h-full">
-                  <div className="flex gap-10 w-full h-full">
+                  <div className="flex md:flex-row flex-col gap-10 w-full h-full">
                     <TodayPostCountCard keywordId={keywordId} />
                     <PeriodPostCountCard keywordId={keywordId} />
                   </div>
-                  <div className="flex gap-10 w-full h-full">
+                  <div className="flex md:flex-row flex-col gap-10 w-full h-full">
                     <PeriodAdCountCard keywordId={keywordId} />
                     <PeriodReactionCountCard keywordId={keywordId} />
                   </div>
