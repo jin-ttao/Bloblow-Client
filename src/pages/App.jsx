@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Route, Routes, useNavigate } from "react-router-dom";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import Header from "../components/Layout/Header";
 import Loading from "../components/UI/Loading";
@@ -10,13 +10,18 @@ import HomePage from "./HomePage";
 import KeywordPage from "./KeywordPage";
 import MyPage from "./MyPage";
 import NotFoundPage from "./NotFoundPage";
+import SampleGroupPage from "./SampleGroupPage";
+import SampleKeywordPage from "./SampleKeywordPage";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const App = () => {
   const setIsSignIn = useBoundStore((state) => state.setIsSignIn);
   const setUserInfo = useBoundStore((state) => state.setUserInfo);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
+
   const navigate = useNavigate();
+  const pathname = useLocation().pathname;
+  const isSampleRoute = pathname.startsWith("/dashboard/sample");
 
   useEffect(() => {
     const auth = getAuth();
@@ -29,13 +34,16 @@ const App = () => {
         setUserInfo({ uid, email, displayName, photoURL });
         setIsAuthChecked(true);
       } else {
-        navigate("/");
+        if (!isSampleRoute) {
+          navigate("/");
+        }
+
         setIsAuthChecked(true);
       }
     });
 
     return () => unsubscribe();
-  }, [setIsSignIn, setUserInfo, navigate]);
+  }, [setIsSignIn, setUserInfo, navigate, isSampleRoute]);
 
   return (
     <ReactQueryProviders>
@@ -45,6 +53,11 @@ const App = () => {
           <Route path="/" exact element={<HomePage />} />
           <Route path="/myPage" element={<MyPage />} />
           <Route path="/dashboard">
+            <Route path="sample">
+              <Route index element={<SampleGroupPage />} />
+              <Route path="keyword-one" element={<SampleKeywordPage />} />
+              <Route path="keyword-two" element={<SampleKeywordPage />} />
+            </Route>
             <Route path=":groupId">
               <Route index element={<GroupPage />} />
               <Route path=":keywordId" element={<KeywordPage />} />
