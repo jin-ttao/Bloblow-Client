@@ -8,28 +8,24 @@ import useSignInRedirect from "../hooks/useSignInRedirect";
 const HomePage = () => {
   useSignInRedirect();
 
-  const handleSampleDashboardButtonClick = () => {
-    if (window.amplitude) {
-      window.amplitude.track("clicked_button", {
-        title: "sample_dashboard",
-        timestamp: new Date().toISOString(),
-      });
-    }
-  };
-
   return (
     <main className="flex flex-col items-center w-full gap-20">
       <div className="w-full h-90% flex-grow-1 flex-center gap-30 p-25 sm:p-50 bg-emerald-100/30">
         <section className="w-full lg:w-[60%] flex-center">
           <div className="flex flex-col items-start justify-center gap-10">
-            <Logo styles="text-60 lg:text-90 animate-fadeInFast hover:cursor-default" />
-            <article className="flex flex-col items-start gap-20 animate-fadeInSlow text-gray-800 mb-5 sm:mb-20">
-              <p className="text-20 sm:text-24 lg:text-26 font-bold">
+            <div id="homeLogo">
+              <Logo styles="text-60 lg:text-90 hover:cursor-default" />
+            </div>
+            <article
+              id="homeIntroduction"
+              className="flex flex-col items-start gap-20 text-gray-800 mb-5 sm:mb-20"
+            >
+              <div id="homeIntroductionTitle" className="text-20 sm:text-24 lg:text-26 font-bold">
                 우리 브랜드를 언급한
                 <br />
                 네이버 블로그 게시물을 한 곳에
-              </p>
-              <div className="flex flex-col items-start gap-10">
+              </div>
+              <div id="homeIntroductionDescription" className="flex flex-col items-start gap-10">
                 <p className="text-16 sm:text-20">
                   사용자들은 우리 브랜드를 어떻게 생각하고 있을까?
                 </p>
@@ -40,14 +36,14 @@ const HomePage = () => {
               <img src="/assets/postListSample.png" alt="게시물 목록 샘플 이미지" />
             </div>
             <div className="flex gap-10 w-full">
-              <SignInButton type={SIGN_BUTTON_TYPE.LANDING_PAGE} />
-              <Button
-                styles="flex-center px-12 py-6 font-medium border-1 border-slate-400 bg-green-300/60 rounded-[5px] text-black text-13 sm:text-18 transition duration-500 ease-in-out hover:text-white hover:bg-green-500 hover:shadow-md"
-                destination={"/dashboard/sample"}
-                onClick={handleSampleDashboardButtonClick}
-              >
-                로그인 없이 둘러보기
-              </Button>
+              <div id="signInButton">
+                <SignInButton type={SIGN_BUTTON_TYPE.LANDING_PAGE} />
+              </div>
+              <div id="goSampleDashboardButton">
+                <Button styles="flex-center px-12 py-6 font-medium border-1 border-slate-400 bg-green-300/60 rounded-[5px] text-black text-13 sm:text-18 transition duration-500 ease-in-out hover:text-white hover:bg-green-500 hover:shadow-md">
+                  로그인 없이 둘러보기
+                </Button>
+              </div>
             </div>
           </div>
         </section>
