@@ -45,10 +45,20 @@ const HomePage = () => {
               <img src="/assets/postListSample.png" alt="게시물 목록 샘플 이미지" />
             </div>
             <div className="flex gap-10 w-full">
-              <SignInButton type={SIGN_BUTTON_TYPE.LANDING_PAGE} />
-              <Button styles="flex-center px-12 py-6 font-medium border-1 border-slate-400 bg-green-300/60 rounded-[5px] text-black text-13 sm:text-18 transition duration-500 ease-in-out hover:text-white hover:bg-green-500 hover:shadow-md">
-                <span id="sampleButton">로그인 없이 둘러보기</span>
-              </Button>
+              <button
+                type="button"
+                id="signInButton"
+                className="flex-center px-12 py-6 font-semibold border-1 border-slate-400 bg-white rounded-[5px] text-black text-13 sm:text-18 transition duration-500 ease-in-out hover:text-white hover:bg-green-500 hover:shadow-md"
+              >
+                오늘 올라온 게시물 보기
+              </button>
+              <button
+                type="button"
+                id="sampleButton"
+                className="flex-center px-12 py-6 font-medium border-1 border-slate-400 bg-green-300/60 rounded-[5px] text-black text-13 sm:text-18 transition duration-500 ease-in-out hover:text-white hover:bg-green-500 hover:shadow-md"
+              >
+                로그인 없이 둘러보기
+              </button>
             </div>
           </div>
         </section>
