@@ -12,7 +12,7 @@ const SignInButton = ({ type }) => {
   if (type === SIGN_BUTTON_TYPE.LANDING_PAGE) {
     return (
       <Button styles="flex-center px-12 py-6 font-semibold border-1 border-slate-400 bg-white rounded-[5px] text-black text-13 sm:text-18 transition duration-500 ease-in-out hover:text-white hover:bg-green-500 hover:shadow-md">
-        오늘 올라온 게시물 보기
+        <span id="signInButton">오늘 올라온 게시물 보기</span>
         {openModalTypeList[openModalTypeList.length - 1] === MODAL_TYPE.ERROR && (
           <ErrorModal errorMessage={ERROR_MESSAGE.SIGN_IN_ERROR} />
         )}

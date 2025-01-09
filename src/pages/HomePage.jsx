@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+
 import SignInButton from "../components/Button/SignInButton";
 import Logo from "../components/Common/Logo";
 import Footer from "../components/Layout/Footer";
@@ -7,6 +9,14 @@ import useSignInRedirect from "../hooks/useSignInRedirect";
 
 const HomePage = () => {
   useSignInRedirect();
+  useEffect(() => {
+    const handleClick = (e) => {
+      console.log("e.target", e.target.id);
+    };
+
+    window.addEventListener("click", handleClick);
+    return () => window.removeEventListener("click", handleClick);
+  }, []);
 
   return (
     <main className="flex flex-col items-center w-full gap-20">
@@ -17,33 +27,28 @@ const HomePage = () => {
               <Logo styles="text-60 lg:text-90 hover:cursor-default" />
             </div>
             <article
-              id="homeIntroduction"
+              id="homeIntro"
               className="flex flex-col items-start gap-20 text-gray-800 mb-5 sm:mb-20"
             >
-              <div id="homeIntroductionTitle" className="text-20 sm:text-24 lg:text-26 font-bold">
+              <div id="homeTitle" className="text-20 sm:text-24 lg:text-26 font-bold">
                 우리 브랜드를 언급한
                 <br />
                 네이버 블로그 게시물을 한 곳에
               </div>
-              <div id="homeIntroductionDescription" className="flex flex-col items-start gap-10">
-                <p className="text-16 sm:text-20">
-                  사용자들은 우리 브랜드를 어떻게 생각하고 있을까?
-                </p>
-                <p className="text-16 sm:text-20">실제 사용자들의 이야기와 후기를 모아 보세요.</p>
+              <div id="homeDesc" className="flex flex-col items-start gap-10 text-16 sm:text-20">
+                사용자들은 우리 브랜드를 어떻게 생각하고 있을까?
+                <br />
+                실제 사용자들의 이야기와 후기를 모아 보세요.
               </div>
             </article>
             <div className="flex lg:hidden justify-center w-[90%] sm:w-[70%] md:w-[60%] mb-10 sm:mb-20">
               <img src="/assets/postListSample.png" alt="게시물 목록 샘플 이미지" />
             </div>
             <div className="flex gap-10 w-full">
-              <div id="signInButton">
-                <SignInButton type={SIGN_BUTTON_TYPE.LANDING_PAGE} />
-              </div>
-              <div id="goSampleDashboardButton">
-                <Button styles="flex-center px-12 py-6 font-medium border-1 border-slate-400 bg-green-300/60 rounded-[5px] text-black text-13 sm:text-18 transition duration-500 ease-in-out hover:text-white hover:bg-green-500 hover:shadow-md">
-                  로그인 없이 둘러보기
-                </Button>
-              </div>
+              <SignInButton type={SIGN_BUTTON_TYPE.LANDING_PAGE} />
+              <Button styles="flex-center px-12 py-6 font-medium border-1 border-slate-400 bg-green-300/60 rounded-[5px] text-black text-13 sm:text-18 transition duration-500 ease-in-out hover:text-white hover:bg-green-500 hover:shadow-md">
+                <span id="sampleButton">로그인 없이 둘러보기</span>
+              </Button>
             </div>
           </div>
         </section>
